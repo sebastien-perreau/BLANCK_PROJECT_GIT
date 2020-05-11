@@ -21,7 +21,7 @@ int main(void)
     
     while(1)
     {      
-        
+        // test
         ble_stack_tasks();
                
         background_tasks(&acquisitions);
