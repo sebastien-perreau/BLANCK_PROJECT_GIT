@@ -4,3 +4,5 @@
 /PLIB.X/debug/
 .DS_Store
 .git
+/PROJECT.X/dist/
+/PROJECT.X/build/
