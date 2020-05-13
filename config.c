@@ -1,6 +1,6 @@
 #include "config.h"
 
-const IRQ_DATA_PRIORITY IrqDataPriorityTab[] =
+const irq_data_priority_t IrqDataPriorityTab[] =
 {
     { CHANGE_NOTICE_INTERRUPT_PRIORITY },
     
