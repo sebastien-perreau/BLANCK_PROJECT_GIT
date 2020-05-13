@@ -62,7 +62,7 @@ void cfg_timers(void)
     // Configure interrupt for timer
     irq_init(IRQ_T1, IRQ_DISABLED, irq_timer_priority(TIMER1));
     // Initialization TIMER 1 - DISABLE INTERRUPTION (ONLY USED FOR GET_TICK).
-    TIMER_REGISTERS * timerRegister = (TIMER_REGISTERS *)_TMR1_BASE_ADDRESS;
+    timers_registers_t * timerRegister = (timers_registers_t *)_TMR1_BASE_ADDRESS;
     timerRegister->TCON    = 0x0000;
     timerRegister->TMR     = 0x0000;
     timerRegister->PR      = 0xFFFF;
