@@ -40,7 +40,6 @@ void __ISR(_TIMER_4_VECTOR, _IPLxAUTO(TIMER4_INTERRUPT_PRIORITY)) Timer4Interrup
     TIMER4_CLR_FLAG();
 }
 
-//  Timer5 handler
 void __ISR(_TIMER_5_VECTOR, _IPLxAUTO(TIMER5_INTERRUPT_PRIORITY)) Timer5InterruptHandler(void)
 {
     timer_interrupt_handler(TIMER5);

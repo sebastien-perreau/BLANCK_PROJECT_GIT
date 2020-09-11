@@ -15,8 +15,6 @@
                 <make-dep-project>../../PLIB2_GIT/PLIB.X</make-dep-project>
             </make-dep-projects>
             <sourceRootList>
-                <sourceRootElem>..</sourceRootElem>
-                <sourceRootElem>../../PLIB_2_40+_GIT</sourceRootElem>
                 <sourceRootElem>../../PLIB2_GIT</sourceRootElem>
             </sourceRootList>
             <confList>
