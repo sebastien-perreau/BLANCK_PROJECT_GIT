@@ -125,17 +125,3 @@ int main(void)
         
     }
 }
-
-uint32_t secure_validation(uint8_t * public_key)
-{
-    static const uint16_t private_key_128bits[16] = {6627, 6855, 3424, 7121, 6054, 9187, 2013, 4725, 625, 132, 9827, 5467, 3827, 8992, 65, 1087};
-    uint32_t result = 0;
-    uint8_t i;
-    
-    for (i = 0 ; i < 16 ; i++)
-    {
-        result += (public_key[i] * private_key_128bits[i]);
-    }
-    
-    return result;
-}
