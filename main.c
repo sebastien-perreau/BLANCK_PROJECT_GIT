@@ -2,7 +2,7 @@
 #include "config.h"
 
 ACQUISITIONS_DEF(acquisitions);
-BLE_PICKIT_DEF(ble_pickit, "Home box", ENABLE);
+BLE_PICKIT_DEF(ble_pickit, "Home box", BLE_SECURITY_DISABLED);
 
 SOFTWARE_PWM_DEF(spwm, TIMER5, SOFTWARE_PWM_FREQ_200HZ, SOFTWARE_PWM_RESO_1, __PB12);
 LED_DEF(stairs_led, &spwm.pwm[0], OFF, 100, TICK_10MS, TICK_5MS);
@@ -117,6 +117,8 @@ int main(void)
             ble_pickit.app_buffer.out_data[1] = rolling_shutter_dining_room_state;
             ble_pickit.app_buffer.out_data[2] = rolling_shutter_living_room_state;
             ble_pickit.flags.notif_app_buffer = 1;
+            
+            LOG("rolling shutters states: %x", rolling_shutters_previous_states);
         }
         
         ble_stack_tasks();
