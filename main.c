@@ -28,7 +28,7 @@ int main(void)
     
     // Others initializations
     pwm_init(PWM_NONE, 40000, 250000);
-    ble_init(UART4, UART_BAUDRATE_1M, &ble_pickit);
+    ble_init(UART4, UART_BAUDRATE_1M, &ble_pickit, &acquisitions);
     log_init(UART1, UART_BAUDRATE_2M);
     m_init_hardware_picadapter();
     mUpdateLedStatusD2(OFF);
@@ -85,6 +85,8 @@ int main(void)
         {
             ble_pickit.app_buffer.in_is_updated = false;
             
+//            LOG("length: %d %d %d %d", ble_pickit.app_buffer.in_length, ble_pickit.app_buffer.in_data[0], ble_pickit.app_buffer.in_data[1], ble_pickit.app_buffer.in_data[2]);
+            
             if (ble_pickit.app_buffer.in_length == 3)
             {
                 mUpdateTick(tick_timeout);
@@ -118,7 +120,7 @@ int main(void)
             ble_pickit.app_buffer.out_data[2] = rolling_shutter_living_room_state;
             ble_pickit.flags.notif_app_buffer = 1;
             
-            LOG("rolling shutters states: %x", rolling_shutters_previous_states);
+//            LOG("rolling shutters states: %x", rolling_shutters_previous_states);
         }
         
         ble_stack_tasks();
