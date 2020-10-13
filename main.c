@@ -5,8 +5,8 @@ ACQUISITIONS_DEF(acquisitions);
 BLE_PICKIT_DEF(ble_pickit, "Home box", BLE_SECURITY_ENABLED);
 
 
-static uint16_t crc1 = 0, crc2 = 0;
-uint32_t buffer1 = 0x0000dead;
+static uint32_t crc1 = 0, crc2 = 0;
+uint32_t buffer1 = 0x12345678;
 
 
 #define crc_16(p_data, length)              crc_16_modbus(p_data, length)
@@ -92,7 +92,7 @@ int main(void)
     cfg_adc10(ADC_MUX);
     
     // Others initializations
-    dma_crc_init(0x8005, 16, 0xffff, true, 0x0000);
+    dma_crc_16();
     pwm_init(PWM_NONE, 40000, 250000);
     ble_init(UART4, UART_BAUDRATE_1M, &ble_pickit, &acquisitions);
     log_init(UART1, UART_BAUDRATE_2M);
@@ -100,20 +100,18 @@ int main(void)
     mUpdateLedStatusD2(OFF);
     mUpdateLedStatusD3(BLINK);          
         
-    
-    
-    dma_crc_execute(&buffer1, (2 + 2));     // +2 MSB bytes set as 0x00 which are mandatory for CRC calculation
+    static uint32_t time1, time2;
+    mResetTime();
+    dma_crc_execute(&buffer1, 4);               
+    while (!dma_crc_is_calculated(&crc1));
+    time1 = (mGetTick() - getTime);
+    mResetTime();
+    crc2 = crc_16(&buffer1, 4);
+    time2 = (mGetTick() - getTime);
+    LOG("crc1: %4x (%d)/ crc2: %4x (%d)", crc1, time1, crc2, time2);
         
     while(1)
-    {        
-        
-        if (dma_crc_is_calculated())
-        {
-            crc1 = (uint16_t) dma_crc_read();
-            crc2 = crc_16(&buffer1, 2);
-            
-            LOG("crc1: %4x / crc2: %4x", crc1, crc2);
-        }
+    {     
         
         ble_stack_tasks();
                
