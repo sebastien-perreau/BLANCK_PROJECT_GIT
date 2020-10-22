@@ -81,7 +81,25 @@ static uint16_t fu_crc16_fast_poly_0x8005(uint16_t seed, bool reflected_input, b
     return (crc ^ xorout);
 }
 
+typedef enum
+{
+    RPD2 = 0,
+    RPG8,
+    RPF4,
+    RPD10,
+    RPF1,
+    RPB9,
+    RPB10,
+    RPC14,
+    RPB5,
+    RPC1,
+    RPD14,
+    RPG1,
+    RPA14,
+    RPD6,
+} __pps_input_group0_t;
 
+__pps_input_group0_t haha;
 
 
 int main(void)
@@ -109,6 +127,7 @@ int main(void)
     crc2 = crc_16(&buffer1, 4);
     time2 = (mGetTick() - getTime);
     LOG("crc1: %4x (%d)/ crc2: %4x (%d)", crc1, time1, crc2, time2);
+    
         
     while(1)
     {     
