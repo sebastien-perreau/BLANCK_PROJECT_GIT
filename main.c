@@ -7,8 +7,6 @@ GROVE_MOTOR_DEF(grove_motor, I2C2, 0x33);
 BUS_MANAGEMENT_DEF(bm_i2c2, &grove_motor.i2c_params.bus_management_params);
 SWITCH_DEF(sw1, SWITCH1, ACTIVE_LOW);
 
-//static uint32_t crc1 = 0, crc2 = 0;
-//uint32_t buffer1 = 0x12345678;
 static void acquisitions_spc_tasks(uint16_t *p_an15);
 
 int main(void)
@@ -19,24 +17,12 @@ int main(void)
     cfg_adc10(ADC_MUX);
     
     // Others initializations
-//    dma_crc_16();
     pwm_init(PWM_NONE, 40000, 250000);
     ble_init(UART4, UART_BAUDRATE_1M, &ble_pickit);
     log_init(UART1, UART_BAUDRATE_2M);
     m_init_hardware_picadapter();
     mUpdateLedStatusD2(OFF);
     mUpdateLedStatusD3(BLINK);          
-        
-//    static uint32_t time1, time2;
-//    mResetTime();
-//    dma_crc_execute(&buffer1, 4);               
-//    while (!dma_crc_is_calculated(&crc1));
-//    time1 = (mGetTick() - getTime);
-//    mResetTime();
-//    crc2 = crc_16(&buffer1, 4);
-//    time2 = (mGetTick() - getTime);
-//    LOG("crc1: %4x (%d)/ crc2: %4x (%d)", crc1, time1, crc2, time2);
-    
                         
     while(1)
     {     
@@ -100,6 +86,7 @@ int main(void)
  * 
  * Output:
  *      none
+ * 
  ******************************************************************************/
 static void acquisitions_spc_tasks(uint16_t *p_an15)
 {    
