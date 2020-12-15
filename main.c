@@ -5,9 +5,84 @@ BLE_PICKIT_DEF(ble_pickit, "SPC", BLE_SECURITY_DISABLED);
 
 GROVE_MOTOR_DEF(grove_motor, I2C2, 0x33);
 BUS_MANAGEMENT_DEF(bm_i2c2, &grove_motor.i2c_params.bus_management_params);
-SWITCH_DEF(sw1, SWITCH1, ACTIVE_LOW);
+SWITCH_DEF(sw1, SWITCH2, ACTIVE_LOW);
 
 static void acquisitions_spc_tasks(uint16_t *p_an15);
+
+bool grove_motor_task(uint16_t next_position)
+{
+    // 1 tour = 200 full steps
+    static uint8_t rpm = 120;   // 120 tours par minute -> 2 tours par second -> 400 pas par second -> 1 pas = 2,5ms
+    static const uint64_t tick_2_5ms = 200000;
+    
+    static state_machine_t sm = {0};
+    static uint64_t time_stepper_drive = 0;
+    static uint16_t curr_position = 2000;
+    
+    bool ret = 0;
+    
+    switch (sm.index)
+    {
+        case 0:
+            mUpdateTick(sm.tick);
+            sm.index++;
+            break;
+            
+        case 1:
+            if (mTickCompare(sm.tick) >= TICK_100MS)
+            {
+                e_grove_motor_stepper_run(&grove_motor, GROVE_MOTOR_FULL_STEP, rpm, -200*20);
+                sm.index++;
+                mUpdateTick(sm.tick);
+            }
+            break;
+            
+        case 2:
+            
+            if (mTickCompare(sm.tick) > (TICK_1S*10))
+            {
+                e_grove_motor_stepper_run(&grove_motor, GROVE_MOTOR_FULL_STEP, rpm, 2000);
+                sm.index++;
+                mUpdateTick(sm.tick);
+            }
+            break;
+            
+        case 3:
+            
+            if (mTickCompare(sm.tick) > (TICK_1S*5))
+            {
+                sm.index++;
+                mUpdateTick(sm.tick);
+            }
+            break;
+            
+        case 4:
+            
+            if (next_position != curr_position)
+            {
+                e_grove_motor_stepper_run(&grove_motor, GROVE_MOTOR_FULL_STEP, rpm, (next_position - curr_position));
+                time_stepper_drive = abs((next_position - curr_position)) * tick_2_5ms;
+                curr_position = next_position;
+                sm.index++;
+                mUpdateTick(sm.tick);
+            }
+            else
+            {
+                ret = 1;
+            }
+            break;
+            
+        case 5:
+            
+            if (mTickCompare(sm.tick) > time_stepper_drive)
+            {
+                sm.index = 4;
+            }
+            break;
+    }
+    
+    return ret;
+}
 
 int main(void)
 {        
@@ -26,41 +101,30 @@ int main(void)
                         
     while(1)
     {     
+        static uint16_t position = 2000;    // [0 .. 4000]
         
         fu_switch(&sw1);
         
         switch (sw1.indice)
         {
             case 0:
+                position = 2000;
                 break;
-
+                
             case 1:
-                e_grove_motor_stepper_stop(&grove_motor);
-                sw1.indice++;
+                position = 3000;
                 break;
 
             case 2:
-                break;
-
-            case 3:
-//                e_grove_motor_stepper_keep_run(&grove_motor, GROVE_MOTOR_FULL_STEP, 200, false);
-                e_grove_motor_stepper_run(&grove_motor, GROVE_MOTOR_MICRO_STEPPING, 120, 200*1);
-                sw1.indice++;
-                break;
-
-            case 4:
-                break;
-
-            case 5:
-//                e_grove_motor_stepper_keep_run(&grove_motor, GROVE_MOTOR_FULL_STEP, 200, false);
-                e_grove_motor_stepper_run(&grove_motor, GROVE_MOTOR_MICRO_STEPPING, 120, -200*1);
-                sw1.indice = 2;
+                position = 500;
                 break;
 
             default:
                 sw1.indice = 0;
                 break;
         }
+        
+        grove_motor_task(position);
         
         fu_bus_management_task(&bm_i2c2);
         e_grove_motor_tb6612fng_deamon(&grove_motor);
