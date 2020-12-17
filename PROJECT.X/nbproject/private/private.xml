@@ -5,10 +5,7 @@
         <group>
             <file>file:/Users/sebastienperreau/Documents/Pic32/Library/BLANCK_PROJECT_GIT/main.c</file>
             <file>file:/Users/sebastienperreau/Documents/Pic32/Library/BLANCK_PROJECT_GIT/config.h</file>
-            <file>file:/Users/sebastienperreau/Documents/Pic32/Library/PLIB2_GIT/_High_Level_Driver/ble.h</file>
-            <file>file:/Users/sebastienperreau/Documents/Pic32/Library/PLIB2_GIT/_External_Components/e_grove_motor_tb6612fng.c</file>
             <file>file:/Users/sebastienperreau/Documents/Pic32/Library/BLANCK_PROJECT_GIT/config.c</file>
-            <file>file:/Users/sebastienperreau/Documents/Pic32/Library/PLIB2_GIT/_High_Level_Driver/ble.c</file>
         </group>
     </open-files>
 </project-private>
