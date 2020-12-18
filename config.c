@@ -74,7 +74,7 @@ void cfg_timers(void)
 void cfg_adc10(uint32_t analog_inputs)
 {
     // All ports B as digital (AN0 to AN15 on port B)
-    AD1PCFGSET = ALL;
+    AD1PCFGSET = 0xffffffff;
     if (analog_inputs > 0)
     {
         adc10_init(analog_inputs, ADC10_VDD_VSS, NULL);

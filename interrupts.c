@@ -4,43 +4,43 @@
 
 #include "config.h"
 
-void __ISR(_CHANGE_NOTICE_VECTOR, _IPLxAUTO(CHANGE_NOTICE_INTERRUPT_PRIORITY)) ChangeNoticeInterruptHandler(void)
+void __ISR(_CHANGE_NOTICE_VECTOR, _IPLxAUTO(CHANGE_NOTICE_INTERRUPT_PRIORITY)) ChangeNoticeHandler(void)
 {
     ports_interrupt_handler();
     irq_clr_flag(IRQ_CN);
 }
 
-void __ISR(_ADC_VECTOR, _IPLxAUTO(ADC10_INTERRUPT_PRIORITY)) Adc10InterruptHandler(void)
+void __ISR(_ADC_VECTOR, _IPLxAUTO(ADC10_INTERRUPT_PRIORITY)) Adc10Handler(void)
 {
     adc10_interrupt_handler();
     irq_clr_flag(IRQ_AD1);
 }
 
-void __ISR(_TIMER_1_VECTOR, _IPLxAUTO(TIMER1_INTERRUPT_PRIORITY)) Timer1InterruptHandler(void)
+void __ISR(_TIMER_1_VECTOR, _IPLxAUTO(TIMER1_INTERRUPT_PRIORITY)) Timer1Handler(void)
 {
     timer_interrupt_handler(TIMER1);
     TIMER1_CLR_FLAG();
 }
 
-void __ISR(_TIMER_2_VECTOR, _IPLxAUTO(TIMER2_INTERRUPT_PRIORITY)) Timer2InterruptHandler(void)
+void __ISR(_TIMER_2_VECTOR, _IPLxAUTO(TIMER2_INTERRUPT_PRIORITY)) Timer2Handler(void)
 {
     timer_interrupt_handler(TIMER2);
     TIMER2_CLR_FLAG();
 }
 
-void __ISR(_TIMER_3_VECTOR, _IPLxAUTO(TIMER3_INTERRUPT_PRIORITY)) Timer3InterruptHandler(void)
+void __ISR(_TIMER_3_VECTOR, _IPLxAUTO(TIMER3_INTERRUPT_PRIORITY)) Timer3Handler(void)
 {
     timer_interrupt_handler(TIMER3);
     TIMER3_CLR_FLAG();
 }
 
-void __ISR(_TIMER_4_VECTOR, _IPLxAUTO(TIMER4_INTERRUPT_PRIORITY)) Timer4InterruptHandler(void)
+void __ISR(_TIMER_4_VECTOR, _IPLxAUTO(TIMER4_INTERRUPT_PRIORITY)) Timer4Handler(void)
 {
     timer_interrupt_handler(TIMER4);
     TIMER4_CLR_FLAG();
 }
 
-void __ISR(_TIMER_5_VECTOR, _IPLxAUTO(TIMER5_INTERRUPT_PRIORITY)) Timer5InterruptHandler(void)
+void __ISR(_TIMER_5_VECTOR, _IPLxAUTO(TIMER5_INTERRUPT_PRIORITY)) Timer5Handler(void)
 {
     timer_interrupt_handler(TIMER5);
     TIMER5_CLR_FLAG();
@@ -413,18 +413,14 @@ void __ISR(_UART_6_VECTOR, _IPLxAUTO(UART6_INTERRUPT_PRIORITY)) UART6Handler(voi
     }
 }
 
-/*
-//	CAN1 handler
-void __ISR(_CAN_1_VECTOR, _IPLxAUTO(CAN1_INTERRUPT_PRIORITY)) CAN1InterruptHandler(void)
+void __ISR(_CAN_1_VECTOR, _IPLxAUTO(CAN1_INTERRUPT_PRIORITY)) CAN1Handler(void)
 {
-    CANTaskRx(CAN1);
+    can_interrupt_handler(CAN1);
     irq_clr_flag(IRQ_CAN1);
 }
 
-//	CAN2 handler
-void __ISR(_CAN_2_VECTOR, _IPLxAUTO(CAN2_INTERRUPT_PRIORITY)) CAN2InterruptHandler(void)
+void __ISR(_CAN_2_VECTOR, _IPLxAUTO(CAN2_INTERRUPT_PRIORITY)) CAN2Handler(void)
 {
-    CANTaskRx(CAN2);
+    can_interrupt_handler(CAN2);
     irq_clr_flag(IRQ_CAN2);
 }
-*/

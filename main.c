@@ -20,6 +20,8 @@ int main(void)
     mUpdateLedStatusD2(OFF);
     mUpdateLedStatusD3(BLINK);          
                         
+    can_init(CAN1, CAN_SPEED_500KBPS);
+    
     while(1)
     {     
                        

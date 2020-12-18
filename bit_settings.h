@@ -8,11 +8,11 @@
 #pragma config FVBUSONIO = ON           // USB VBUS ON Selection (Controlled by USB Module)
 
 // DEVCFG2
-#pragma config FPLLIDIV = DIV_2         // PLL Input Divider (2x Divider)
-#pragma config FPLLMUL = MUL_20         // PLL Multiplier (20x Multiplier)
+#pragma config FPLLIDIV = DIV_2         // PLL Input Divider (2x Divider) - DIV_1 / DIV_2 / DIV_3 / DIV_4 / DIV_5 / DIV_6 / DIV_10 / DIV_12
+#pragma config FPLLMUL = MUL_20         // PLL Multiplier (20x Multiplier) - MUL_15 / MUL_16 / MUL_17 / MUL_18 / MUL_19 / MUL_20 / MUL_21 / MUL_24
 #pragma config UPLLIDIV = DIV_12        // USB PLL Input Divider (12x Divider)
 #pragma config UPLLEN = OFF             // USB PLL Enable (Disabled and Bypassed)
-#pragma config FPLLODIV = DIV_1         // System PLL Output Clock Divider (PLL Divide by 1)
+#pragma config FPLLODIV = DIV_1         // System PLL Output Clock Divider (PLL Divide by 1) - DIV_1 / DIV_2 / DIV_4 / DIV_8 / DIV_16 / DIV_32 / DIV_64 / DIV_256                                        
 
 // DEVCFG1
 #pragma config FNOSC = PRIPLL           // Oscillator Selection Bits (Primary Osc w/PLL (XT+,HS+,EC+PLL))
@@ -20,7 +20,7 @@
 #pragma config IESO = ON                // Internal/External Switch Over (Enabled)
 #pragma config POSCMOD = HS             // Primary Oscillator Configuration (HS osc mode)
 #pragma config OSCIOFNC = OFF           // CLKO Output Signal Active on the OSCO Pin (Disabled)
-#pragma config FPBDIV = DIV_1           // Peripheral Clock Divisor (Pb_Clk is Sys_Clk/1)
+#pragma config FPBDIV = DIV_1           // Peripheral Clock Divisor (Pb_Clk is Sys_Clk/1) - DIV_1 / DIV_2 / DIV_4 / DIV_8                                        
 #pragma config FCKSM = CSDCMD           // Clock Switching and Monitor Selection (Clock Switch Disable, FSCM Disabled)
 #pragma config WDTPS = PS1048576        // Watchdog Timer Postscaler (1:1048576)
 #pragma config FWDTEN = OFF             // Watchdog Timer Enable (WDT Disabled (SWDTEN Bit Controls))
