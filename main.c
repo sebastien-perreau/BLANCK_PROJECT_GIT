@@ -5,6 +5,23 @@ BLE_PICKIT_DEF(ble_pickit, "SPC", BLE_SECURITY_DISABLED);
 
 static void acquisitions_spc_tasks(uint16_t *p_an15);
 
+typedef struct
+{
+    unsigned    a:8;
+    unsigned    b:16;
+    unsigned    c:8;
+    unsigned    d:32;
+} haha;
+
+CAN_FRAME_TX_DEF(can_frame_0x100, 0x100, CAN_STD_ID, CAN_DATA_8_BYTES, TICK_10MS);      // Periodic Standard TX frame - 8 bytes
+CAN_FRAME_TX_DEF(can_frame_0x101, 0x101, CAN_XTD_ID, CAN_DATA_4_BYTES, 0);              // Aperiodic Extended TX frame - 4 bytes
+CAN_FRAME_TX_DEF(can_frame_0x4000, 0x4000, CAN_XTD_ID, CAN_DATA_6_BYTES, TICK_100MS);   // Periodic Extended TX frame - 6 bytes
+CAN_FRAME_RX_DEF(can_frame_0x200, 0x200, CAN_STD_ID);                                   // Standard RX frame
+
+CAN_DEF(can_1, CAN1, CAN_SPEED_500KBPS, CAN_BUS_BIT_TIMING_FIXED, __PC1, &can_frame_0x100, &can_frame_0x101, &can_frame_0x200);
+
+CAN_LINK_STRUCTURE_TO_FRAME(test_haha, can_frame_0x100, haha);
+
 int main(void)
 {        
     cfg_pic32();
@@ -18,12 +35,13 @@ int main(void)
     log_init(UART1, UART_BAUDRATE_2M);
     m_init_hardware_picadapter();
     mUpdateLedStatusD2(OFF);
-    mUpdateLedStatusD3(BLINK);          
-                        
-    can_init(CAN1, CAN_SPEED_500KBPS);
+    mUpdateLedStatusD3(BLINK);
+    
+    test_haha->b = 0xabcd;
     
     while(1)
     {     
+        can_tasks(&can_1);
                        
         ble_stack_tasks();
                
