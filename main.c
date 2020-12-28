@@ -15,10 +15,12 @@ typedef struct
 
 CAN_FRAME_TX_DEF(can_frame_0x100, 0x100, CAN_STD_ID, CAN_DATA_8_BYTES, TICK_10MS);      // Periodic Standard TX frame - 8 bytes
 CAN_FRAME_TX_DEF(can_frame_0x101, 0x101, CAN_XTD_ID, CAN_DATA_4_BYTES, 0);              // Aperiodic Extended TX frame - 4 bytes
+CAN_FRAME_TX_DEF(can_frame_0x102, 0x102, CAN_XTD_ID, CAN_DATA_3_BYTES, TICK_5MS);       // Periodic Extended TX frame - 3 bytes
 CAN_FRAME_TX_DEF(can_frame_0x4000, 0x4000, CAN_XTD_ID, CAN_DATA_6_BYTES, TICK_100MS);   // Periodic Extended TX frame - 6 bytes
 CAN_FRAME_RX_DEF(can_frame_0x200, 0x200, CAN_STD_ID);                                   // Standard RX frame
 
 CAN_DEF(can_1, CAN1, CAN_SPEED_500KBPS, CAN_BUS_BIT_TIMING_FIXED, __PC1, &can_frame_0x100, &can_frame_0x101, &can_frame_0x200);
+CAN_DEF(can_2, CAN2, CAN_SPEED_500KBPS, CAN_BUS_BIT_TIMING_FIXED, __PC2, &can_frame_0x102);
 
 CAN_LINK_STRUCTURE_TO_FRAME(test_haha, can_frame_0x100, haha);
 
@@ -41,7 +43,10 @@ int main(void)
     
     while(1)
     {     
+        test_haha->d = (uint32_t)  mGetTick();
+        
         can_tasks(&can_1);
+        can_tasks(&can_2);
                        
         ble_stack_tasks();
                
