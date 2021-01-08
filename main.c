@@ -5,34 +5,6 @@ BLE_PICKIT_DEF(ble_pickit, "SPC", BLE_SECURITY_DISABLED);
 
 static void acquisitions_spc_tasks(uint16_t *p_an15);
 
-typedef struct
-{
-    unsigned    a:8;
-    unsigned    b:16;
-    unsigned    c:8;
-    unsigned    d:32;
-} haha;
-
-typedef struct
-{
-    unsigned    :4;
-    unsigned    a:8;
-    unsigned    :20;
-    unsigned    b:32;
-} bbb;
-
-CAN_FRAME_TX_DEF(can_frame_tx_0x100, 0x100, CAN_STD_ID, CAN_DATA_8_BYTES, TICK_10MS);      // Periodic Standard TX frame - 8 bytes
-CAN_FRAME_TX_DEF(can_frame_tx_0x101, 0x101, CAN_XTD_ID, CAN_DATA_4_BYTES, 0);              // Aperiodic Extended TX frame - 4 bytes
-CAN_FRAME_TX_DEF(can_frame_tx_0x102, 0x500, CAN_XTD_ID, CAN_DATA_3_BYTES, TICK_5MS);       // Periodic Extended TX frame - 3 bytes
-
-CAN_FRAME_RX_DEF(can_frame_rx_0x300, 0x300, CAN_STD_ID);                                   // Standard RX frame
-CAN_FRAME_RX_DEF(can_frame_rx_0x400, 0x400, CAN_XTD_ID);                                   // Extended RX frame
-
-CAN_DEF(can_1, CAN1, CAN_SPEED_500KBPS, CAN_BUS_BIT_TIMING_AUTO, CAN1_ENABLE_PIN, &can_frame_tx_0x100, &can_frame_tx_0x101, &can_frame_tx_0x102, &can_frame_rx_0x300, &can_frame_rx_0x400);
-
-CAN_LINK_STRUCTURE_TO_FRAME(test_haha, can_frame_tx_0x100, haha);
-CAN_LINK_STRUCTURE_TO_FRAME(test_rx, can_frame_rx_0x300, bbb);
-
 int main(void)
 {        
     cfg_pic32();
@@ -50,26 +22,6 @@ int main(void)
     
     while(1)
     {     
-        static uint64_t tick_tx = 0;
-        
-        if (mTickCompare(tick_tx) >= TICK_1S)
-        {
-            mUpdateTick(tick_tx);
-            can_frame_tx_0x101.force_transfer = 1;
-            can_frame_tx_0x101.frame.msg_data_0_3.BYTE0 = 0xff;
-            test_haha->a++;
-        }
-        if (can_frame_rx_0x300.is_receive_updated)
-        {
-            can_frame_rx_0x300.is_receive_updated = false;
-            
-            can_frame_tx_0x101.frame.msg_data_0_3.BYTE1 = test_rx->a;
-        }
-        
-        test_haha->b = 0xabcd;
-        test_haha->d = (uint32_t)  mGetTick();
-        
-        can_tasks(&can_1);
                        
         ble_stack_tasks();
                
