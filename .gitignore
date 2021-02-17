@@ -1,7 +1,7 @@
-/PROJECT_MZ.X/build/
-/PROJECT_MZ.X/debug/
-/PROJECT_MZ.X/disassembly/
-/PROJECT_MZ.X/dist/
+/PROJECT.X/build/
+/PROJECT.X/debug/
+/PROJECT.X/disassembly/
+/PROJECT.X/dist/
 .DS_Store
 .git
 .gitattributes
