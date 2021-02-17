@@ -1,0 +1,36 @@
+build/default/production/_ext/1472/interrupts.o:  \
+../interrupts.c  \
+ ../config.h  \
+../../PLIB2_GIT/PLIB2.h  \
+../../PLIB2_GIT/defines.h  \
+ ../../PLIB2_GIT/_Low_Level_Driver/s00_system.h  \
+ ../../PLIB2_GIT/_Low_Level_Driver/s08_interrupts.h  \
+ ../../PLIB2_GIT/_Low_Level_Driver/s07_resets.h  \
+ ../../PLIB2_GIT/_Low_Level_Driver/s12_ports.h  \
+ ../../PLIB2_GIT/_High_Level_Driver/errors.h  \
+ ../../PLIB2_GIT/_High_Level_Driver/crc_16.h  \
+ ../../PLIB2_GIT/_High_Level_Driver/utilities.h  \
+ ../../PLIB2_GIT/_High_Level_Driver/string_advance.h  \
+ ../../PLIB2_GIT/_Low_Level_Driver/s14_timers.h  \
+ ../../PLIB2_GIT/_Low_Level_Driver/s16_output_compare.h  \
+ ../../PLIB2_GIT/_Low_Level_Driver/s17_adc.h  \
+ ../../PLIB2_GIT/_Low_Level_Driver/s21_uart.h  \
+ ../../PLIB2_GIT/_Low_Level_Driver/s23_spi.h  \
+ ../../PLIB2_GIT/_Low_Level_Driver/s24_i2c.h  \
+ ../../PLIB2_GIT/_Low_Level_Driver/s31_dma.h  \
+ ../../PLIB2_GIT/_Low_Level_Driver/s34_can.h  \
+ ../../PLIB2_GIT/_High_Level_Driver/software_pwm.h  \
+ ../../PLIB2_GIT/_High_Level_Driver/lin.h  \
+ ../../PLIB2_GIT/_High_Level_Driver/ble.h  \
+ ../../PLIB2_GIT/_External_Components/e_25lc512.h  \
+ ../../PLIB2_GIT/_External_Components/e_mcp23s17.h  \
+ ../../PLIB2_GIT/_External_Components/e_at42qt2120.h  \
+ ../../PLIB2_GIT/_External_Components/e_pca9685.h  \
+ ../../PLIB2_GIT/_External_Components/e_veml7700.h  \
+ ../../PLIB2_GIT/_External_Components/e_tps92662.h  \
+ ../../PLIB2_GIT/_External_Components/e_grove_motor_tb6612fng.h  \
+ ../../PLIB2_GIT/_Experimental/_EXAMPLES_.h  \
+ ../../PLIB2_GIT/_Experimental/_LOG.h  \
+ ../../PLIB2_GIT/_Experimental/pink_lady.h  \
+ ../../PLIB2_GIT/_Experimental/fat_file_system.h  \
+ ../../PLIB2_GIT/_Experimental/sd_card.h 

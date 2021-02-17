@@ -5,39 +5,39 @@ BLE_PICKIT_DEF(ble_pickit, "SPC", BLE_SECURITY_DISABLED);
 
 static void acquisitions_spc_tasks(uint16_t *p_an15);
 
-#define CS_PIN      __PB8
-#define RESX_PIN    __PB9
-
-#define NUMBER_OF_RGB_LEDS  42
-#define NUMBER_OF_LINES     63
-#define LED_RESOLUTION      0       // 0: 8 bits / 1: 16 bits
-
-#define SCAN1               0
-#define SCAN2               (NUMBER_OF_RGB_LEDS * 3)
-#define SCAN3               (NUMBER_OF_RGB_LEDS * 6)
-
-#define DATA1               2   // 3 - 1 = 1 x 3 - 1
-#define DATA2               1   // 3 - 2 = 1 x 3 - 2
-#define DATA3               0   // 3 - 3 = 1 x 3 - 3
-#define DATA4               5   // 6 - 1 = 2 x 3 - 1
-#define DATA5               4   // 6 - 2 = 2 x 3 - 2
-#define DATA6               3   // 6 - 3 = 2 x 3 - 3
-
-#define DATA(n)             ((n-1)/3)*3 + (2 - ((n-1)%3))
-#define SCAN(n)             (NUMBER_OF_RGB_LEDS * 3 * (n-1))
-#define DATA_SCAN(x, y)     (DATA(x) + SCAN(y))
-
-static dma_module_type_t dma_id;
-static uint8_t dummy_byte;
-
-static _io_t cs_pin = {2, 8};
-static _io_t resx_pin = {2, 9};
-
-static uint8_t buffer[2 + NUMBER_OF_RGB_LEDS*3*NUMBER_OF_LINES] = {0};
-static dma_channel_transfer_t dma_ch_transfer_tx = {buffer, NULL, sizeof(buffer), 1, 1, 0x0000};
-
-static uint16_t test[] = {DATA_SCAN(1, 1), DATA_SCAN(2, 1), DATA_SCAN(3, 3), DATA_SCAN(4, 3)};
-static uint8_t i, j;
+//#define CS_PIN      __PB8
+//#define RESX_PIN    __PB9
+//
+//#define NUMBER_OF_RGB_LEDS  42
+//#define NUMBER_OF_LINES     5
+//#define LED_RESOLUTION      1       // 0: 8 bits / 1: 16 bits
+//
+//#define SCAN1               0
+//#define SCAN2               (NUMBER_OF_RGB_LEDS * 3)
+//#define SCAN3               (NUMBER_OF_RGB_LEDS * 6)
+//
+//#define DATA1               2   // 3 - 1 = 1 x 3 - 1
+//#define DATA2               1   // 3 - 2 = 1 x 3 - 2
+//#define DATA3               0   // 3 - 3 = 1 x 3 - 3
+//#define DATA4               5   // 6 - 1 = 2 x 3 - 1
+//#define DATA5               4   // 6 - 2 = 2 x 3 - 2
+//#define DATA6               3   // 6 - 3 = 2 x 3 - 3
+//
+//#define DATA(n)             ((n-1)/3)*3 + (2 - ((n-1)%3))
+//#define SCAN(n)             (NUMBER_OF_RGB_LEDS * 3 * (n-1))
+//#define DATA_SCAN(x, y)     (DATA(x) + SCAN(y))
+//
+//static dma_module_type_t dma_id;
+//static uint8_t dummy_byte;
+//
+//static _io_t cs_pin = {2, 8};
+//static _io_t resx_pin = {2, 9};
+//
+//static uint8_t buffer[2 + (NUMBER_OF_RGB_LEDS*3*NUMBER_OF_LINES*(LED_RESOLUTION+1))] = {0};
+//static dma_channel_transfer_t dma_ch_transfer_tx = {buffer, NULL, sizeof(buffer), 1, 1, 0x0000};
+//
+//static uint16_t test[] = {DATA_SCAN(1, 1), DATA_SCAN(2, 1), DATA_SCAN(3, 3), DATA_SCAN(4, 3)};
+//static uint8_t i, j;
 
 int main(void)
 {        
@@ -55,144 +55,154 @@ int main(void)
     mUpdateLedStatusD3(BLINK);   
     
     
-    buffer[0] = 0x01;
-    buffer[1] = 0x2c;
-    // CS pin
-    ports_reset_pin_output(cs_pin);
-    ports_set_bit(cs_pin);
-    
-    // RESX pin
-    ports_reset_pin_output(resx_pin);
-    ports_set_bit(resx_pin);
-
-    spi_init(SPI1, NULL, IRQ_NONE, 20000000, SPI_STD_MASTER_CONFIG);
-    dma_id = dma_init(NULL, DMA_CONT_PRIO_3, DMA_INT_BLOCK_TRANSFER_DONE, DMA_EVT_START_TRANSFER_ON_IRQ, spi_get_tx_irq(SPI1), 0xff);
-        
-    // XM11921 hardware reset
-    ports_set_bit(resx_pin);
-    Delay_ms(10);
-    ports_clr_bit(resx_pin);
-    Delay_ms(10);
-    ports_set_bit(resx_pin);
-    Delay_ms(200);
-    
-    ports_clr_bit(cs_pin);
-    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
-    ports_set_bit(cs_pin);
-    ports_clr_bit(cs_pin);
-    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0xff, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0x70, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0x66, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0x01, &dummy_byte));
-    ports_set_bit(cs_pin);
-    ports_clr_bit(cs_pin);
-    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0x80, &dummy_byte));
-    ports_set_bit(cs_pin);
-    ports_clr_bit(cs_pin);
-    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0xff, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0x70, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0x66, &dummy_byte));
-    ports_set_bit(cs_pin);
-    ports_clr_bit(cs_pin);
-    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0xa1, &dummy_byte));
-    ports_set_bit(cs_pin);
-    ports_clr_bit(cs_pin);
-    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0xc0, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, NUMBER_OF_RGB_LEDS, &dummy_byte));   // Resolution 60 x 60
-    while(spi_write_and_read_8(SPI1, NUMBER_OF_LINES, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0x10, &dummy_byte));
-    ports_set_bit(cs_pin);
-    ports_clr_bit(cs_pin);
-    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0x3a, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, LED_RESOLUTION, &dummy_byte));   // 1: 16 bits PWM / 0: 8 bits PWM
-    ports_set_bit(cs_pin);
-    
-    Delay_ms(20);
-    ports_clr_bit(cs_pin);
-    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0x11, &dummy_byte));
-    ports_set_bit(cs_pin);
-    Delay_ms(200);
-    ports_clr_bit(cs_pin);
-    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
-    while(spi_write_and_read_8(SPI1, 0x29, &dummy_byte));
-    ports_set_bit(cs_pin);
-    Delay_ms(100);
-    
-    
-    
-    dma_ch_transfer_tx.dst_start_addr = (void *) spi_get_tx_reg(SPI1);   
-    
-    ports_clr_bit(cs_pin);
-    dma_set_transfer_params(dma_id, &dma_ch_transfer_tx);   
-    dma_channel_enable(dma_id, ON, false);
+//    buffer[0] = 0x01;
+//    buffer[1] = 0x2c;
+//    // CS pin
+//    ports_reset_pin_output(cs_pin);
+//    ports_set_bit(cs_pin);
+//    
+//    // RESX pin
+//    ports_reset_pin_output(resx_pin);
+//    ports_set_bit(resx_pin);
+//
+//    spi_init(SPI1, NULL, IRQ_NONE, 20000000, SPI_STD_MASTER_CONFIG);
+//    dma_id = dma_init(NULL, DMA_CONT_PRIO_3, DMA_INT_BLOCK_TRANSFER_DONE, DMA_EVT_START_TRANSFER_ON_IRQ, spi_get_tx_irq(SPI1), 0xff);
+//        
+//    // XM11921 hardware reset
+//    ports_set_bit(resx_pin);
+//    Delay_ms(10);
+//    ports_clr_bit(resx_pin);
+//    Delay_ms(10);
+//    ports_set_bit(resx_pin);
+//    Delay_ms(200);
+//    
+//    ports_clr_bit(cs_pin);
+//    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
+//    ports_set_bit(cs_pin);
+//    ports_clr_bit(cs_pin);
+//    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0xff, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0x70, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0x66, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0x01, &dummy_byte));
+//    ports_set_bit(cs_pin);
+//    ports_clr_bit(cs_pin);
+//    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0x80, &dummy_byte));
+//    ports_set_bit(cs_pin);
+//    ports_clr_bit(cs_pin);
+//    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0xff, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0x70, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0x66, &dummy_byte));
+//    ports_set_bit(cs_pin);
+//    ports_clr_bit(cs_pin);
+//    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0xa1, &dummy_byte));
+//    ports_set_bit(cs_pin);
+//    ports_clr_bit(cs_pin);
+//    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0xc0, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, NUMBER_OF_RGB_LEDS, &dummy_byte));   // Resolution 60 x 60
+//    while(spi_write_and_read_8(SPI1, NUMBER_OF_LINES, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0x10, &dummy_byte));
+//    ports_set_bit(cs_pin);
+//    ports_clr_bit(cs_pin);
+//    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0x3a, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, LED_RESOLUTION, &dummy_byte));   // 1: 16 bits PWM / 0: 8 bits PWM
+//    ports_set_bit(cs_pin);
+//    
+//    Delay_ms(20);
+//    ports_clr_bit(cs_pin);
+//    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0x11, &dummy_byte));
+//    ports_set_bit(cs_pin);
+//    Delay_ms(200);
+//    ports_clr_bit(cs_pin);
+//    while(spi_write_and_read_8(SPI1, 0x00, &dummy_byte));
+//    while(spi_write_and_read_8(SPI1, 0x29, &dummy_byte));
+//    ports_set_bit(cs_pin);
+//    Delay_ms(100);
+//    
+//    
+//    
+//    dma_ch_transfer_tx.dst_start_addr = (void *) spi_get_tx_reg(SPI1);   
+//    
+//    ports_clr_bit(cs_pin);
+//    dma_set_transfer_params(dma_id, &dma_ch_transfer_tx);   
+//    dma_channel_enable(dma_id, ON, false);
     
     while(1)
     {     
-        static uint64_t tick = 0;
-        static uint8_t v = 255, k = 0;
-        
-        if ((dma_get_flags(dma_id) & DMA_FLAG_BLOCK_TRANSFER_DONE) > 0)
-        {
-            dma_clear_flags(dma_id, DMA_FLAG_BLOCK_TRANSFER_DONE); 
-            ports_set_bit(cs_pin);
-            
-            ports_clr_bit(cs_pin);
-            dma_set_transfer_params(dma_id, &dma_ch_transfer_tx);   
-            dma_channel_enable(dma_id, ON, false);
-        }
-        
-        if (mTickCompare(tick) >= TICK_100MS)
-        {
-            mUpdateTick(tick);
-            
-            buffer[test[k]+2] = v;
-            if (++k >= (sizeof(test)/2))
-            {
-                k = 0;
-                v = (v == 0) ? 255 : 0;
-            }
-            
-//            ports_clr_bit(cs_pin);
-//            while(spi_write_and_read_8(SPI1, 0x01, &dummy_byte));
-//            while(spi_write_and_read_8(SPI1, 0x2c, &dummy_byte));
-//            for (i = 0; i < NUMBER_OF_LINES; i++) // y lines
-//            {
-//                for (j = 0; j < NUMBER_OF_RGB_LEDS; j++) // x pixel
-//                {  
-//                    if (LED_RESOLUTION)
-//                    {
-//                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 0) ? 255 : 0, &dummy_byte));
-//                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 0) ? 255 : 0, &dummy_byte));
-//                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 1) ? 255 : 0, &dummy_byte));
-//                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 1) ? 255 : 0, &dummy_byte));
-//                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 2) ? 255 : 0, &dummy_byte));
-//                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 2) ? 255 : 0, &dummy_byte));
-//                    }
-//                    else
-//                    {
-//                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 0) ? 255 : 0, &dummy_byte));
-//                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 1) ? 255 : 0, &dummy_byte));
-//                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 2) ? 255 : 0, &dummy_byte));
-//                    }
-//                }
-//            }
+//        static uint64_t tick = 0;
+//        static uint8_t v = 255, k = 0;
+//        
+//        if ((dma_get_flags(dma_id) & DMA_FLAG_BLOCK_TRANSFER_DONE) > 0)
+//        {
+//            dma_clear_flags(dma_id, DMA_FLAG_BLOCK_TRANSFER_DONE); 
 //            ports_set_bit(cs_pin);
 //            
-//            inc++;
-//            inc &= 7;
-        }
-                       
+//            ports_clr_bit(cs_pin);
+//            dma_set_transfer_params(dma_id, &dma_ch_transfer_tx);   
+//            dma_channel_enable(dma_id, ON, false);
+//        }
+//        
+//        if (mTickCompare(tick) >= TICK_100MS)
+//        {
+//            mUpdateTick(tick);
+//            
+////            buffer[test[0]+2]++;
+////            buffer[test[1]+2] = 255;
+////            buffer[test[2]+2] = 240;
+////            buffer[test[3]+2] = 255;
+//            
+//            buffer[test[0]*2+2] = 0xff;
+//            buffer[test[0]*2+3] = 0xff;
+//            
+////            buffer[test[k]*(LED_RESOLUTION+1)+2] = v;
+////            if (++k >= (sizeof(test)/2))
+////            {
+////                k = 0;
+////                v = (v == 0) ? 255 : 0;
+////            }
+//            
+////            ports_clr_bit(cs_pin);
+////            while(spi_write_and_read_8(SPI1, 0x01, &dummy_byte));
+////            while(spi_write_and_read_8(SPI1, 0x2c, &dummy_byte));
+////            for (i = 0; i < NUMBER_OF_LINES; i++) // y lines
+////            {
+////                for (j = 0; j < NUMBER_OF_RGB_LEDS; j++) // x pixel
+////                {  
+////                    if (LED_RESOLUTION)
+////                    {
+////                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 0) ? 255 : 0, &dummy_byte));
+////                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 0) ? 255 : 0, &dummy_byte));
+////                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 1) ? 255 : 0, &dummy_byte));
+////                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 1) ? 255 : 0, &dummy_byte));
+////                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 2) ? 255 : 0, &dummy_byte));
+////                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 2) ? 255 : 0, &dummy_byte));
+////                    }
+////                    else
+////                    {
+////                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 0) ? 255 : 0, &dummy_byte));
+////                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 1) ? 255 : 0, &dummy_byte));
+////                        while(spi_write_and_read_8(SPI1, GET_BIT(inc, 2) ? 255 : 0, &dummy_byte));
+////                    }
+////                }
+////            }
+////            ports_set_bit(cs_pin);
+////            
+////            inc++;
+////            inc &= 7;
+//        }
+        
+        _EXAMPLE_TPS92662();
+        
         ble_stack_tasks();
                
         acquisitions_spc_tasks(NULL);
