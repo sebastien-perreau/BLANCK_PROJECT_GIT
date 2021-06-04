@@ -5,14 +5,6 @@ BLE_PICKIT_DEF(ble_pickit, "SPC", BLE_SECURITY_DISABLED);
 
 static void acquisitions_spc_tasks(uint16_t *p_an15);
 
-
-SD_CARD_DEF(sd, SPI1, __PB10, ENABLE);
-FILE_DEF(sd, mFile1, "HD Rear Lamp\\file8bits.bin");
-FILE_DEF(sd, mFile2, "HD Rear Lamp\\file16bits.bin");
-
-static uint8_t read_buffer[200];
-static uint32_t address = 0;
-
 int main(void)
 {        
     cfg_pic32();
@@ -28,25 +20,10 @@ int main(void)
     mUpdateLedStatusD2(OFF);
     mUpdateLedStatusD3(BLINK);   
     
-    mSetPinsDigitalOut(__PB9);
-    mSetIO(__PB9);
-    
-    sd_card_open(&mFile1);
-    sd_card_open(&mFile2);
-    
-    sd_card_read_file_restart_playback(mFile1);
-    sd_card_read_file_restart_playback(mFile2);
     
     while(1)
     {     
-        
-        if (!sd_card_read_play_file(&mFile1, (uint8_t *) read_buffer, sizeof(read_buffer), TICK_30MS, NULL))
-        {
-            sd_card_read_file_restart_playback(mFile1);
-            mInvIO(__PB9);
-        }
-        
-        sd_card_deamon(&sd);
+        _EXAMPLE_TPS92662();
         
 //        ble_stack_tasks();
                
